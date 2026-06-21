@@ -1,0 +1,206 @@
+import sys
+import os
+import argparse
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from scan import scan_targets
+from report_html import generate_html_report
+
+def auto_scan(target_url, dict_file='data/framework_paths.json', enable_ai=True, 
+              output_file='data/scan_results.csv', workers=10, timeout=3,
+              max_paths=0, ai_limit=20, depth_limit=3, cache_404=True,
+              resume_file=None):
+    if dict_file and not os.path.exists(dict_file):
+        print(f"Warning: Dictionary file not found: {dict_file}")
+        dict_file = None
+    
+    print(f"Target: {target_url}")
+    print(f"Dictionary: {dict_file if dict_file else '框架内置'}")
+    print(f"AI generation: {'ON' if enable_ai else 'OFF'}")
+    print(f"Concurrent workers: {workers}")
+    print(f"Timeout: {timeout}s")
+    print(f"AI limit: {ai_limit}")
+    print(f"Depth limit: {depth_limit}")
+    print(f"Max paths: {'不限' if max_paths == 0 else max_paths}")
+    print(f"Cache 404: {'ON' if cache_404 else 'OFF'}")
+    if resume_file:
+        print(f"Resume: {resume_file}")
+    print(f"Output: {output_file}")
+    print("")
+    
+    result = scan_targets(
+        target_url, dict_file, 
+        output_file=output_file, 
+        enable_ai_generation=enable_ai,
+        workers=workers,
+        timeout=timeout,
+        max_paths=max_paths,
+        ai_limit=ai_limit,
+        depth_limit=depth_limit,
+        cache_404=cache_404,
+        resume_file=resume_file
+    )
+    
+    if result is not None and len(result) > 0:
+        csv_file = output_file
+        html_file = csv_file.replace('.csv', '.html')
+        if not html_file.endswith('.html'):
+            html_file = 'data/report.html'
+        print("")
+        print("=" * 50)
+        print("正在生成 HTML 报告...")
+        generate_html_report(csv_file, html_file)
+        print(f"报告已生成: {html_file}")
+        print("=" * 50)
+    else:
+        print("没有扫描结果，跳过报告生成")
+    
+    return result
+
+def cmd_playwright(args):
+    """使用 Playwright 捕获网络请求"""
+    from playwright_scan import capture_requests
+    capture_requests(args.url, args.output)
+
+def cmd_report(args):
+    csv_file = args.input if args.input else 'data/scan_results.csv'
+    output_file = args.output if args.output else 'data/report.html'
+    
+    if not os.path.exists(csv_file):
+        print(f"错误: 数据文件不存在: {csv_file}")
+        print("请先运行扫描: pathfinder scan -u <url>")
+        return
+    
+    generate_html_report(csv_file, output_file)
+
+def cmd_scan(args):
+    target = args.url
+    if not target.startswith('http'):
+        target = 'http://' + target
+    
+    auto_scan(
+        target, args.dict,
+        enable_ai=not args.no_ai,
+        output_file=args.output,
+        workers=args.workers,
+        timeout=args.timeout,
+        max_paths=args.max_paths,
+        ai_limit=args.ai_limit,
+        depth_limit=args.depth,
+        cache_404=not args.no_cache,
+        resume_file=args.resume
+    )
+
+def main():
+    parser = argparse.ArgumentParser(description='PathFinder - AI-powered path scanner')
+    subparsers = parser.add_subparsers(dest='command', help='子命令')
+    
+    # ===== scan 子命令 =====
+    scan_parser = subparsers.add_parser('scan', help='执行扫描 (自动生成HTML报告)')
+    scan_parser.add_argument('-u', '--url', required=True, help='目标URL')
+    scan_parser.add_argument('-d', '--dict', default='data/framework_paths.json', help='字典文件路径')
+    scan_parser.add_argument('--no-ai', action='store_true', help='禁用AI路径生成')
+    scan_parser.add_argument('-o', '--output', default='data/scan_results.csv', help='输出CSV文件')
+    scan_parser.add_argument('--workers', type=int, default=10, help='并发线程数 (默认: 10)')
+    scan_parser.add_argument('--timeout', type=int, default=3, help='请求超时秒数 (默认: 3)')
+    scan_parser.add_argument('--max-paths', type=int, default=0, help='最大扫描路径数 (默认: 0=不限)')
+    scan_parser.add_argument('--ai-limit', type=int, default=20, help='每条路径AI生成上限 (默认: 20)')
+    scan_parser.add_argument('--depth', type=int, default=3, help='最大路径深度 (默认: 3)')
+    scan_parser.add_argument('--no-cache', action='store_true', help='禁用404缓存')
+    scan_parser.add_argument('--resume', help='从之前的扫描结果继续')
+    
+    # ===== report 子命令 =====
+    report_parser = subparsers.add_parser('report', help='单独生成HTML报告')
+    report_parser.add_argument('-i', '--input', default='data/scan_results.csv', help='输入的CSV文件')
+    report_parser.add_argument('-o', '--output', default='data/report.html', help='输出的HTML文件')
+    
+    # ===== playwright 子命令 =====
+    pw_parser = subparsers.add_parser('playwright', help='使用Playwright捕获网络请求')
+    pw_parser.add_argument('-u', '--url', required=True, help='目标URL')
+    pw_parser.add_argument('-o', '--output', default='data/playwright_requests.json', help='输出JSON文件')
+    
+    args = parser.parse_args()
+    
+    if args.command == 'scan':
+        cmd_scan(args)
+    elif args.command == 'report':
+        cmd_report(args)
+    elif args.command == 'playwright':
+        cmd_playwright(args)
+    else:
+        parser.print_help()
+
+if __name__ == '__main__':
+    main()
+
+def cmd_sensitive(args):
+    """单独运行敏感信息扫描"""
+    from sensitive_scanner import scan_sensitive_files
+    import pandas as pd
+    
+    csv_file = args.input if args.input else 'data/scan_results.csv'
+    if not os.path.exists(csv_file):
+        print(f"错误: 数据文件不存在: {csv_file}")
+        return
+    
+    df = pd.read_csv(csv_file)
+    found_paths = df[df['status_code'] == 200]['path'].tolist()
+    findings, checked = scan_sensitive_files(args.url, found_paths, timeout=args.timeout)
+    
+    if findings:
+        print(f"\n发现 {len(findings)} 条敏感信息:")
+        for f in findings:
+            print(f"  [{f['severity']}] {f['desc']}: {f['value']}")
+
+def cmd_js_extract(args):
+    """单独从JS文件中提取路径"""
+    from js_parser import scan_js_for_paths
+    import pandas as pd
+    
+    csv_file = args.input if args.input else 'data/scan_results.csv'
+    if not os.path.exists(csv_file):
+        print(f"错误: 数据文件不存在: {csv_file}")
+        return
+    
+    df = pd.read_csv(csv_file)
+    found_paths = df[df['status_code'] == 200]['path'].tolist()
+    paths, count = scan_js_for_paths(args.url, found_paths, timeout=args.timeout)
+    
+    if paths:
+        print(f"\n提取到 {len(paths)} 个路径:")
+        for p in paths[:20]:
+            print(f"  {p}")
+
+def cmd_framework(args):
+    """单独识别框架"""
+    from framework_detector import detect_framework
+    framework, config = detect_framework(args.url)
+    print(f"\n框架: {config['framework_name']}")
+    print(f"后缀: {config['extensions']}")
+    print(f"常用路径: {config['common_paths'][:5]}")
+
+def cmd_dict(args):
+    """查看/管理框架字典"""
+    from scan import FRAMEWORK_PATHS, save_framework_paths
+    
+    if args.show:
+        for fw, paths in FRAMEWORK_PATHS.items():
+            print(f"\n{fw}: {len(paths)} 条路径")
+            for p in paths[:10]:
+                print(f"  {p}")
+            if len(paths) > 10:
+                print(f"  ... 还有 {len(paths)-10} 条")
+    
+    if args.add:
+        fw = args.framework
+        if fw not in FRAMEWORK_PATHS:
+            FRAMEWORK_PATHS[fw] = []
+        FRAMEWORK_PATHS[fw].append(args.add)
+        save_framework_paths(FRAMEWORK_PATHS)
+        print(f"已添加: {fw} → {args.add}")
+
+def auto_scan_cli():
+    """pathfinder 命令入口"""
+    main()
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,156 @@
+path,risk_level,category,length,depth,has_dot,has_underline,has_dash,contains_admin,contains_login,contains_backup,contains_config,contains_zip,status_code,redirect_count,final_url,has_password_input,has_username_input,has_login_form,has_set_cookie,keyword_hits,page_length,label,status_strategy
+info.action,Low,Other,11,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/info.action,0,0,0,0,0,646,0,Directly analyze content
+api/users,Low,Other,9,1,0,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/users,0,0,0,0,0,0,0,Cached from previous scan
+v3/api-docs,Low,Other,11,1,0,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v3/api-docs,0,0,0,0,0,646,0,Directly analyze content
+static,Low,Other,6,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static,0,0,0,0,0,646,0,Directly analyze content
+css.do,Low,Other,6,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/css.do,0,0,0,0,0,646,0,Directly analyze content
+metrics,Low,Other,7,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/metrics,0,0,0,0,0,646,0,Directly analyze content
+v2/api-docs,Low,Other,11,1,0,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v2/api-docs,0,0,0,0,0,646,0,Directly analyze content
+admin/users,Medium,Potential Sensitive,11,1,0,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/users,0,0,0,0,0,646,0,Directly analyze content
+graphql.action,Low,Other,14,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphql.action,0,0,0,0,0,646,0,Directly analyze content
+css,Low,Other,3,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/css,0,0,0,0,0,646,0,Directly analyze content
+admin/users.jsp,Medium,Potential Sensitive,15,1,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/users.jsp,0,0,0,0,0,646,0,Directly analyze content
+static/css.do,Low,Other,13,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/css.do,0,0,0,0,0,646,0,Directly analyze content
+api/admin.do,Low,Other,12,1,1,0,0,1,0,0,0,0,404,0,https://mall.gitapp.cn/api/admin.do,0,0,0,0,0,0,0,Cached from previous scan
+api/v1.jspx,Low,Other,11,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v1.jspx,0,0,0,0,0,0,0,Cached from previous scan
+api,Low,Other,3,0,0,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api,0,0,0,0,0,0,0,Cached from previous scan
+graphql.do,Low,Other,10,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphql.do,0,0,0,0,0,646,0,Directly analyze content
+api/v2.action,Low,Other,13,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v2.action,0,0,0,0,0,0,0,Cached from previous scan
+actuator/health.do,Low,Other,18,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/health.do,0,0,0,0,0,646,0,Directly analyze content
+admin/login.jsp,High,Potential Sensitive,15,1,1,0,0,1,1,0,0,0,200,0,https://mall.gitapp.cn/admin/login.jsp,0,0,0,0,0,646,0,Directly analyze content
+actuator/heapdump.jsp,Low,Other,21,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/heapdump.jsp,0,0,0,0,0,646,0,Directly analyze content
+actuator/metrics.do,Low,Other,19,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/metrics.do,0,0,0,0,0,646,0,Directly analyze content
+static/js.action,Low,Other,16,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/js.action,0,0,0,0,0,646,0,Directly analyze content
+index.action,Low,Other,12,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/index.action,0,0,0,0,0,646,0,Directly analyze content
+api/admin.jsp,Low,Other,13,1,1,0,0,1,0,0,0,0,404,0,https://mall.gitapp.cn/api/admin.jsp,0,0,0,0,0,0,0,Cached from previous scan
+actuator/health.jspx,Low,Other,20,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/health.jspx,0,0,0,0,0,646,0,Directly analyze content
+static.jspx,Low,Other,11,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static.jspx,0,0,0,0,0,646,0,Directly analyze content
+api/users.jsp,Low,Other,13,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/users.jsp,0,0,0,0,0,0,0,Cached from previous scan
+login.do,Medium,Potential Sensitive,8,0,1,0,0,0,1,0,0,0,200,0,https://mall.gitapp.cn/login.do,0,0,0,0,0,646,0,Directly analyze content
+actuator/metrics.jsp,Low,Other,20,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/metrics.jsp,0,0,0,0,0,646,0,Directly analyze content
+js,Low,Other,2,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/js,0,0,0,0,0,646,0,Directly analyze content
+api/v2.jsp,Low,Other,10,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v2.jsp,0,0,0,0,0,0,0,Cached from previous scan
+actuator/heapdump.jspx,Low,Other,22,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/heapdump.jspx,0,0,0,0,0,646,0,Directly analyze content
+login.jspx,Medium,Potential Sensitive,10,0,1,0,0,0,1,0,0,0,200,0,https://mall.gitapp.cn/login.jspx,0,0,0,0,0,646,0,Directly analyze content
+health.jspx,Low,Other,11,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/health.jspx,0,0,0,0,0,646,0,Directly analyze content
+admin/dashboard.action,Medium,Potential Sensitive,22,1,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/dashboard.action,0,0,0,0,0,646,0,Directly analyze content
+actuator/metrics,Low,Other,16,1,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/metrics,0,0,0,0,0,646,0,Directly analyze content
+admin.jsp,Medium,Potential Sensitive,9,0,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin.jsp,0,0,0,0,0,646,0,Directly analyze content
+metrics.jsp,Low,Other,11,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/metrics.jsp,0,0,0,0,0,646,0,Directly analyze content
+api/v1.action,Low,Other,13,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v1.action,0,0,0,0,0,0,0,Cached from previous scan
+prometheus,Low,Other,10,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/prometheus,0,0,0,0,0,646,0,Directly analyze content
+metrics.action,Low,Other,14,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/metrics.action,0,0,0,0,0,646,0,Directly analyze content
+v3/api-docs.action,Low,Other,18,1,1,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v3/api-docs.action,0,0,0,0,0,646,0,Directly analyze content
+info.do,Low,Other,7,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/info.do,0,0,0,0,0,646,0,Directly analyze content
+metrics.jspx,Low,Other,12,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/metrics.jspx,0,0,0,0,0,646,0,Directly analyze content
+actuator/threaddump.do,Low,Other,22,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/threaddump.do,0,0,0,0,0,646,0,Directly analyze content
+admin.action,Medium,Potential Sensitive,12,0,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin.action,0,0,0,0,0,646,0,Directly analyze content
+health,Low,Other,6,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/health,0,0,0,0,0,646,0,Directly analyze content
+actuator/info,Low,Other,13,1,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/info,0,0,0,0,0,646,0,Directly analyze content
+actuator/health.jsp,Low,Other,19,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/health.jsp,0,0,0,0,0,646,0,Directly analyze content
+graphql,Low,Other,7,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphql,0,0,0,0,0,646,0,Directly analyze content
+actuator/env.jspx,Low,Other,17,1,1,0,0,0,0,0,1,0,200,0,https://mall.gitapp.cn/actuator/env.jspx,0,0,0,0,0,646,0,Directly analyze content
+static/js.jsp,Low,Other,13,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/js.jsp,0,0,0,0,0,646,0,Directly analyze content
+api/users.do,Low,Other,12,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/users.do,0,0,0,0,0,0,0,Cached from previous scan
+v2/api-docs.action,Low,Other,18,1,1,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v2/api-docs.action,0,0,0,0,0,646,0,Directly analyze content
+admin/users.action,Medium,Potential Sensitive,18,1,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/users.action,0,0,0,0,0,646,0,Directly analyze content
+admin/dashboard,Medium,Potential Sensitive,15,1,0,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/dashboard,0,0,0,0,0,646,0,Directly analyze content
+admin/dashboard.jspx,Medium,Potential Sensitive,20,1,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/dashboard.jspx,0,0,0,0,0,646,0,Directly analyze content
+prometheus.jspx,Low,Other,15,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/prometheus.jspx,0,0,0,0,0,646,0,Directly analyze content
+actuator/heapdump.do,Low,Other,20,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/heapdump.do,0,0,0,0,0,646,0,Directly analyze content
+prometheus.jsp,Low,Other,14,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/prometheus.jsp,0,0,0,0,0,646,0,Directly analyze content
+api.action,Low,Other,10,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/api.action,0,0,0,0,0,646,0,Directly analyze content
+js.action,Low,Other,9,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/js.action,0,0,0,0,0,646,0,Directly analyze content
+v2/api-docs.jspx,Low,Other,16,1,1,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v2/api-docs.jspx,0,0,0,0,0,646,0,Directly analyze content
+actuator/info.do,Low,Other,16,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/info.do,0,0,0,0,0,646,0,Directly analyze content
+index.jspx,Low,Other,10,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/index.jspx,0,0,0,0,0,646,0,Directly analyze content
+admin/dashboard.jsp,Medium,Potential Sensitive,19,1,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/dashboard.jsp,0,0,0,0,0,646,0,Directly analyze content
+actuator/threaddump.jsp,Low,Other,23,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/threaddump.jsp,0,0,0,0,0,646,0,Directly analyze content
+graphql.jspx,Low,Other,12,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphql.jspx,0,0,0,0,0,646,0,Directly analyze content
+actuator/threaddump.action,Low,Other,26,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/threaddump.action,0,0,0,0,0,646,0,Directly analyze content
+prometheus.do,Low,Other,13,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/prometheus.do,0,0,0,0,0,646,0,Directly analyze content
+api/v2,Low,Other,6,1,0,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v2,0,0,0,0,0,0,0,Cached from previous scan
+js.do,Low,Other,5,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/js.do,0,0,0,0,0,646,0,Directly analyze content
+login.action,Medium,Potential Sensitive,12,0,1,0,0,0,1,0,0,0,200,0,https://mall.gitapp.cn/login.action,0,0,0,0,0,646,0,Directly analyze content
+api/v1,Low,Other,6,1,0,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v1,0,0,0,0,0,0,0,Cached from previous scan
+health.do,Low,Other,9,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/health.do,0,0,0,0,0,646,0,Directly analyze content
+admin/users.jspx,Medium,Potential Sensitive,16,1,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/users.jspx,0,0,0,0,0,646,0,Directly analyze content
+actuator.action,Low,Other,15,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator.action,0,0,0,0,0,646,0,Directly analyze content
+api/v1.jsp,Low,Other,10,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v1.jsp,0,0,0,0,0,0,0,Cached from previous scan
+graphiql.do,Low,Other,11,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphiql.do,0,0,0,0,0,646,0,Directly analyze content
+api/users.jspx,Low,Other,14,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/users.jspx,0,0,0,0,0,0,0,Cached from previous scan
+actuator/metrics.action,Low,Other,23,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/metrics.action,0,0,0,0,0,646,0,Directly analyze content
+api/admin,High,admin,9,1,0,0,0,1,0,0,0,0,200,1,https://mall.gitapp.cn/admin/,0,0,0,0,0,646,0,Directly analyze content
+actuator.do,Low,Other,11,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator.do,0,0,0,0,0,646,0,Directly analyze content
+index,Low,Other,5,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/index,0,0,0,0,0,646,0,Directly analyze content
+graphql.jsp,Low,Other,11,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphql.jsp,0,0,0,0,0,646,0,Directly analyze content
+api/admin.action,Low,Other,16,1,1,0,0,1,0,0,0,0,404,0,https://mall.gitapp.cn/api/admin.action,0,0,0,0,0,0,0,Cached from previous scan
+css.jsp,Low,Other,7,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/css.jsp,0,0,0,0,0,646,0,Directly analyze content
+api/v1.do,Low,Other,9,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v1.do,0,0,0,0,0,0,0,Cached from previous scan
+actuator/health.action,Low,Other,22,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/health.action,0,0,0,0,0,646,0,Directly analyze content
+api/users.action,Low,Other,16,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/users.action,0,0,0,0,0,0,0,Cached from previous scan
+static.action,Low,Other,13,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static.action,0,0,0,0,0,646,0,Directly analyze content
+js.jspx,Low,Other,7,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/js.jspx,0,0,0,0,0,646,0,Directly analyze content
+v2/api-docs.do,Low,Other,14,1,1,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v2/api-docs.do,0,0,0,0,0,646,0,Directly analyze content
+graphiql.jspx,Low,Other,13,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphiql.jspx,0,0,0,0,0,646,0,Directly analyze content
+api.jsp,Low,Other,7,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/api.jsp,0,0,0,0,0,646,0,Directly analyze content
+admin/login.jspx,High,Potential Sensitive,16,1,1,0,0,1,1,0,0,0,200,0,https://mall.gitapp.cn/admin/login.jspx,0,0,0,0,0,646,0,Directly analyze content
+admin/login.action,High,Potential Sensitive,18,1,1,0,0,1,1,0,0,0,200,0,https://mall.gitapp.cn/admin/login.action,0,0,0,0,0,646,0,Directly analyze content
+health.action,Low,Other,13,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/health.action,0,0,0,0,0,646,0,Directly analyze content
+api.do,Low,Other,6,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/api.do,0,0,0,0,0,646,0,Directly analyze content
+info,Low,Other,4,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/info,0,0,0,0,0,646,0,Directly analyze content
+static.do,Low,Other,9,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static.do,0,0,0,0,0,646,0,Directly analyze content
+css.action,Low,Other,10,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/css.action,0,0,0,0,0,646,0,Directly analyze content
+actuator/threaddump.jspx,Low,Other,24,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/threaddump.jspx,0,0,0,0,0,646,0,Directly analyze content
+static/js.jspx,Low,Other,14,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/js.jspx,0,0,0,0,0,646,0,Directly analyze content
+admin/login,High,Potential Sensitive,11,1,0,0,0,1,1,0,0,0,200,0,https://mall.gitapp.cn/admin/login,0,0,0,0,0,646,0,Directly analyze content
+info.jspx,Low,Other,9,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/info.jspx,0,0,0,0,0,646,0,Directly analyze content
+admin.do,Medium,Potential Sensitive,8,0,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin.do,0,0,0,0,0,646,0,Directly analyze content
+index.jsp,Low,Other,9,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/index.jsp,0,0,0,0,0,646,0,Directly analyze content
+api/admin.jspx,Low,Other,14,1,1,0,0,1,0,0,0,0,404,0,https://mall.gitapp.cn/api/admin.jspx,0,0,0,0,0,0,0,Cached from previous scan
+api.jspx,Low,Other,8,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/api.jspx,0,0,0,0,0,646,0,Directly analyze content
+actuator/heapdump.action,Low,Other,24,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/heapdump.action,0,0,0,0,0,646,0,Directly analyze content
+static/css,Low,Other,10,1,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/css,0,0,0,0,0,646,0,Directly analyze content
+static/css.jsp,Low,Other,14,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/css.jsp,0,0,0,0,0,646,0,Directly analyze content
+v3/api-docs.jspx,Low,Other,16,1,1,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v3/api-docs.jspx,0,0,0,0,0,646,0,Directly analyze content
+actuator/env.jsp,Low,Other,16,1,1,0,0,0,0,0,1,0,200,0,https://mall.gitapp.cn/actuator/env.jsp,0,0,0,0,0,646,0,Directly analyze content
+actuator.jspx,Low,Other,13,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator.jspx,0,0,0,0,0,646,0,Directly analyze content
+admin/login.do,High,Potential Sensitive,14,1,1,0,0,1,1,0,0,0,200,0,https://mall.gitapp.cn/admin/login.do,0,0,0,0,0,646,0,Directly analyze content
+metrics.do,Low,Other,10,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/metrics.do,0,0,0,0,0,646,0,Directly analyze content
+actuator/info.action,Low,Other,20,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/info.action,0,0,0,0,0,646,0,Directly analyze content
+static/css.jspx,Low,Other,15,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/css.jspx,0,0,0,0,0,646,0,Directly analyze content
+v3/api-docs.do,Low,Other,14,1,1,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v3/api-docs.do,0,0,0,0,0,646,0,Directly analyze content
+static/css.action,Low,Other,17,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/css.action,0,0,0,0,0,646,0,Directly analyze content
+actuator/info.jsp,Low,Other,17,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/info.jsp,0,0,0,0,0,646,0,Directly analyze content
+health.jsp,Low,Other,10,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/health.jsp,0,0,0,0,0,646,0,Directly analyze content
+actuator,Low,Other,8,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator,0,0,0,0,0,646,0,Directly analyze content
+index.do,Low,Other,8,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/index.do,0,0,0,0,0,646,0,Directly analyze content
+login,Medium,Potential Sensitive,5,0,0,0,0,0,1,0,0,0,200,0,https://mall.gitapp.cn/login,0,0,0,0,0,646,0,Directly analyze content
+v3/api-docs.jsp,Low,Other,15,1,1,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v3/api-docs.jsp,0,0,0,0,0,646,0,Directly analyze content
+api/v2.jspx,Low,Other,11,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v2.jspx,0,0,0,0,0,0,0,Cached from previous scan
+js.jsp,Low,Other,6,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/js.jsp,0,0,0,0,0,646,0,Directly analyze content
+api/v2.do,Low,Other,9,1,1,0,0,0,0,0,0,0,404,0,https://mall.gitapp.cn/api/v2.do,0,0,0,0,0,0,0,Cached from previous scan
+v2/api-docs.jsp,Low,Other,15,1,1,0,1,0,0,0,0,0,200,0,https://mall.gitapp.cn/v2/api-docs.jsp,0,0,0,0,0,646,0,Directly analyze content
+graphiql.action,Low,Other,15,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphiql.action,0,0,0,0,0,646,0,Directly analyze content
+actuator/env,Low,Other,12,1,0,0,0,0,0,0,1,0,200,0,https://mall.gitapp.cn/actuator/env,0,0,0,0,0,646,0,Directly analyze content
+graphiql,Low,Other,8,0,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphiql,0,0,0,0,0,646,0,Directly analyze content
+admin/users.do,Medium,Potential Sensitive,14,1,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/users.do,0,0,0,0,0,646,0,Directly analyze content
+admin,Medium,Potential Sensitive,5,0,0,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin,0,0,0,0,0,646,0,Directly analyze content
+actuator/health,Low,Other,15,1,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/health,0,0,0,0,0,646,0,Directly analyze content
+actuator/metrics.jspx,Low,Other,21,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/metrics.jspx,0,0,0,0,0,646,0,Directly analyze content
+static.jsp,Low,Other,10,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static.jsp,0,0,0,0,0,646,0,Directly analyze content
+static/js.do,Low,Other,12,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/js.do,0,0,0,0,0,646,0,Directly analyze content
+login.jsp,Medium,Potential Sensitive,9,0,1,0,0,0,1,0,0,0,200,0,https://mall.gitapp.cn/login.jsp,0,0,0,0,0,646,0,Directly analyze content
+actuator/heapdump,Low,Other,17,1,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/heapdump,0,0,0,0,0,646,0,Directly analyze content
+prometheus.action,Low,Other,17,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/prometheus.action,0,0,0,0,0,646,0,Directly analyze content
+actuator/env.do,Low,Other,15,1,1,0,0,0,0,0,1,0,200,0,https://mall.gitapp.cn/actuator/env.do,0,0,0,0,0,646,0,Directly analyze content
+actuator/threaddump,Low,Other,19,1,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/threaddump,0,0,0,0,0,646,0,Directly analyze content
+actuator.jsp,Low,Other,12,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator.jsp,0,0,0,0,0,646,0,Directly analyze content
+static/js,Low,Other,9,1,0,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/static/js,0,0,0,0,0,646,0,Directly analyze content
+info.jsp,Low,Other,8,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/info.jsp,0,0,0,0,0,646,0,Directly analyze content
+actuator/env.action,Low,Other,19,1,1,0,0,0,0,0,1,0,200,0,https://mall.gitapp.cn/actuator/env.action,0,0,0,0,0,646,0,Directly analyze content
+css.jspx,Low,Other,8,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/css.jspx,0,0,0,0,0,646,0,Directly analyze content
+graphiql.jsp,Low,Other,12,0,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/graphiql.jsp,0,0,0,0,0,646,0,Directly analyze content
+actuator/info.jspx,Low,Other,18,1,1,0,0,0,0,0,0,0,200,0,https://mall.gitapp.cn/actuator/info.jspx,0,0,0,0,0,646,0,Directly analyze content
+admin.jspx,Medium,Potential Sensitive,10,0,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin.jspx,0,0,0,0,0,646,0,Directly analyze content
+admin/dashboard.do,Medium,Potential Sensitive,18,1,1,0,0,1,0,0,0,0,200,0,https://mall.gitapp.cn/admin/dashboard.do,0,0,0,0,0,646,0,Directly analyze content

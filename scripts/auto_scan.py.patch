@@ -1,0 +1,68 @@
+def main():
+    parser = argparse.ArgumentParser(description='PathFinder - AI-powered path scanner')
+    subparsers = parser.add_subparsers(dest='command', help='子命令')
+    
+    # ===== scan 子命令 =====
+    scan_parser = subparsers.add_parser('scan', help='执行扫描 (自动生成HTML报告)')
+    scan_parser.add_argument('-u', '--url', required=True, help='目标URL')
+    scan_parser.add_argument('-d', '--dict', default='data/framework_paths.json', help='字典文件路径')
+    scan_parser.add_argument('--no-ai', action='store_true', help='禁用AI路径生成')
+    scan_parser.add_argument('-o', '--output', default='data/scan_results.csv', help='输出CSV文件')
+    scan_parser.add_argument('--workers', type=int, default=10, help='并发线程数 (默认: 10)')
+    scan_parser.add_argument('--timeout', type=int, default=3, help='请求超时秒数 (默认: 3)')
+    scan_parser.add_argument('--max-paths', type=int, default=0, help='最大扫描路径数 (默认: 0=不限)')
+    scan_parser.add_argument('--ai-limit', type=int, default=20, help='每条路径AI生成上限 (默认: 20)')
+    scan_parser.add_argument('--depth', type=int, default=3, help='最大路径深度 (默认: 3)')
+    scan_parser.add_argument('--no-cache', action='store_true', help='禁用404缓存')
+    scan_parser.add_argument('--resume', help='从之前的扫描结果继续')
+    
+    # ===== report 子命令 =====
+    report_parser = subparsers.add_parser('report', help='单独生成HTML报告')
+    report_parser.add_argument('-i', '--input', default='data/scan_results.csv', help='输入的CSV文件')
+    report_parser.add_argument('-o', '--output', default='data/report.html', help='输出的HTML文件')
+    
+    # ===== playwright 子命令 =====
+    pw_parser = subparsers.add_parser('playwright', help='使用Playwright捕获网络请求')
+    pw_parser.add_argument('-u', '--url', required=True, help='目标URL')
+    pw_parser.add_argument('-o', '--output', default='data/playwright_requests.json', help='输出JSON文件')
+    
+    # ===== sensitive 子命令 =====
+    sens_parser = subparsers.add_parser('sensitive', help='敏感信息扫描')
+    sens_parser.add_argument('-u', '--url', required=True, help='目标URL')
+    sens_parser.add_argument('-i', '--input', default='data/scan_results.csv', help='输入CSV文件')
+    sens_parser.add_argument('--timeout', type=int, default=3, help='请求超时')
+    
+    # ===== js-extract 子命令 =====
+    js_parser = subparsers.add_parser('js-extract', help='从JS中提取路径')
+    js_parser.add_argument('-u', '--url', required=True, help='目标URL')
+    js_parser.add_argument('-i', '--input', default='data/scan_results.csv', help='输入CSV文件')
+    js_parser.add_argument('--timeout', type=int, default=3, help='请求超时')
+    
+    # ===== framework 子命令 =====
+    fw_parser = subparsers.add_parser('framework', help='识别目标框架')
+    fw_parser.add_argument('-u', '--url', required=True, help='目标URL')
+    
+    # ===== dict 子命令 =====
+    dict_parser = subparsers.add_parser('dict', help='查看/管理框架字典')
+    dict_parser.add_argument('--show', action='store_true', help='显示当前字典')
+    dict_parser.add_argument('--add', help='添加路径到字典')
+    dict_parser.add_argument('--framework', default='java_spring', help='框架名称')
+    
+    args = parser.parse_args()
+    
+    if args.command == 'scan':
+        cmd_scan(args)
+    elif args.command == 'report':
+        cmd_report(args)
+    elif args.command == 'playwright':
+        cmd_playwright(args)
+    elif args.command == 'sensitive':
+        cmd_sensitive(args)
+    elif args.command == 'js-extract':
+        cmd_js_extract(args)
+    elif args.command == 'framework':
+        cmd_framework(args)
+    elif args.command == 'dict':
+        cmd_dict(args)
+    else:
+        parser.print_help()
