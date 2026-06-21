@@ -51,7 +51,7 @@ def extract_features_single(url, path):
     
     return features
 
-def predict_paths(base_url, path_list, model_file='output/pathfinder_model.pkl'):
+def predict_paths(base_url, path_list, model_file='output/dirai_model.pkl'):
     model = joblib.load(model_file)
     feature_cols = ['length', 'depth', 'has_dot', 'has_underline', 'has_dash',
                     'contains_admin', 'contains_login', 'contains_backup',

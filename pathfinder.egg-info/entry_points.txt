@@ -1,2 +1,0 @@
-[console_scripts]
-pathfinder = scripts.auto_scan:auto_scan_cli

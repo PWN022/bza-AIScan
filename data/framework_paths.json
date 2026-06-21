@@ -278,6 +278,22 @@
     "images/",
     "assets/",
     "robots.txt",
-    "sitemap.xml"
+    "sitemap.xml",
+    "assets/.htm",
+    "assets/.html",
+    "images/.json",
+    "images/.js",
+    "assets/.js",
+    "assets/.json",
+    "images/.html",
+    "images/.htm",
+    "assets/.xml",
+    "assets/.css",
+    "/antd.min.css",
+    "/assets/index-1d8f62a7.css",
+    "images/.css",
+    "images/.xml",
+    "/echarts.min.js",
+    "/assets/index-2ade40d0.js"
   ]
 }

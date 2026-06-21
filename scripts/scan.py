@@ -13,6 +13,7 @@ from threading import Lock
 from config import HIGH_VALUE_PATHS, STATUS_CODE_STRATEGY, HIGH_RISK_KEYWORDS, MEDIUM_RISK_KEYWORDS
 from framework_detector import detect_framework
 from cache import URLCache
+from ai_analyzer import AIAnalyzer
 
 warnings.filterwarnings('ignore')
 
@@ -121,7 +122,7 @@ def load_paths_from_file(file_path):
     return None
 
 # ========================================
-# AI 路径变体生成（带数量控制）
+# AI 路径变体生成（规则引擎 + AI）
 # ========================================
 def generate_path_variants(path, depth_limit=3, max_count=20):
     variants = set()
@@ -244,7 +245,7 @@ def extract_features(url, path, timeout=5):
     return features
 
 # ========================================
-# 主扫描函数（完整版）
+# 主扫描函数
 # ========================================
 def scan_targets(base_url, path_list, output_file='data/scan_results.csv', 
                  enable_ai_generation=True, workers=10, timeout=3, 
@@ -256,35 +257,36 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
     # 初始化缓存
     url_cache = URLCache() if cache_404 else None
     
+    # AI 分析器
+    ai = AIAnalyzer() if enable_ai_generation else None
+    
     # 框架识别
     framework, config = detect_framework(base_url)
     print(f"检测到框架: {config['framework_name']}")
     print(f"使用后缀: {config['extensions']}")
     print("")
     
-        # ===== 从HTML提取路径 =====
+    # 从HTML提取路径
+    html_found_paths = []
     try:
         from html_parser import scan_html_for_paths
         html_paths = scan_html_for_paths(base_url, timeout)
         if html_paths:
-            # 将HTML提取的路径存入一个临时变量，后续合并到framework_paths
             html_found_paths = html_paths
             print(f"  HTML提取: {len(html_paths)} 条路径")
         else:
-            html_found_paths = []
+            print(f"  HTML提取: 未提取到路径")
     except Exception as e:
         print(f"  [!] HTML路径提取失败: {e}")
-        html_found_paths = []
-
+    
     # 加载路径
     framework_paths = get_framework_paths(framework)
     print(f"框架专属路径: {len(framework_paths)} 条")
     
-    # 合并HTML提取的路径
     if html_found_paths:
         framework_paths = list(set(framework_paths + html_found_paths))
         print(f"  合并HTML提取路径后: {len(framework_paths)} 条")
-
+    
     user_paths = []
     if path_list and isinstance(path_list, str):
         loaded = load_paths_from_file(path_list)
@@ -293,7 +295,7 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
     elif path_list and isinstance(path_list, list):
         user_paths = list(path_list)
     
-    # 如果是断点续扫，加载已扫描的路径
+    # 断点续扫
     scanned_paths_set = set()
     existing_results = []
     if resume_file and os.path.exists(resume_file):
@@ -349,17 +351,16 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
     total = len(final_paths)
     pending_paths = list(final_paths)
     ai_generated_count = 0
+    ai_trigger_count = 0
     
     def scan_single(path):
         if _interrupted:
             return None
         
-        # 缓存检查
         full_url = urljoin(base_url, path)
         if url_cache:
             cached_status = url_cache.get(full_url)
             if cached_status is not None:
-                # 返回模拟结果
                 features = {
                     'path': path,
                     'risk_level': 'Low',
@@ -395,13 +396,11 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
     
     try:
         with ThreadPoolExecutor(max_workers=workers) as executor:
-            # 先提交所有任务
             future_to_path = {}
             for path in pending_paths:
                 future = executor.submit(scan_single, path)
                 future_to_path[future] = path
             
-            # 处理完成的任务
             for future in as_completed(future_to_path):
                 if _interrupted:
                     break
@@ -412,12 +411,11 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
                         results.append(result)
                         scanned_count += 1
                         
-                        # 进度显示
                         progress = int((scanned_count / total) * 100)
                         bar = '=' * (progress // 2) + '>' + '.' * (50 - progress // 2)
                         print(f"\r进度: {scanned_count}/{total} [{bar}] {progress}% - {path[:40]:<40}", end='')
                         
-                        # AI 生成新路径（限制数量）
+                        # 规则生成
                         if enable_ai_generation and ai_generated_count < ai_limit * 10:
                             if result.get('status_code') in [200, 301, 302, 403, 401]:
                                 variants = generate_path_variants(path, depth_limit=depth_limit, max_count=5)
@@ -428,17 +426,34 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
                                             pending_paths.append(v)
                                             new_count += 1
                                             ai_generated_count += 1
-                                            # 提交新任务
                                             future_new = executor.submit(scan_single, v)
                                             future_to_path[future_new] = v
                                             total = len(pending_paths) + scanned_count
                                 if new_count > 0:
-                                    print(f"\n  + AI生成 {new_count} 个新路径 (总计: {ai_generated_count})", end='')
+                                    print(f"\n  + 规则生成 {new_count} 个新路径 (总计: {ai_generated_count})", end='')
+                        
+                        # AI 推理（每 15 条可达路径触发一次）
+                        if ai and ai.enabled and len(results) % 15 == 0 and len(results) > 0:
+                            try:
+                                found_paths = [r['path'] for r in results if r.get('status_code') not in [404, -1]]
+                                if found_paths and len(found_paths) > 3:
+                                    ai_paths = ai.generate_paths(found_paths, base_url, max_new=5)
+                                    for v in ai_paths:
+                                        if v not in final_paths and v not in pending_paths:
+                                            if max_paths == 0 or len(final_paths) + len(pending_paths) < max_paths:
+                                                pending_paths.append(v)
+                                                ai_generated_count += 1
+                                                future_new = executor.submit(scan_single, v)
+                                                future_to_path[future_new] = v
+                                                total = len(pending_paths) + scanned_count
+                                                print(f"\n  + AI 推理新路径: {v}", end='')
+                            except Exception as e:
+                                pass
         
     except Exception as e:
         print(f"\n扫描异常: {e}")
     
-    print("\n")  # 换行
+    print("\n")
     
     # 保存结果
     if results:
@@ -450,7 +465,6 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
         if url_cache:
             print(f"   缓存命中: 节省了重复请求")
         
-        # 自动更新字典
         found_paths = df[df['status_code'] != 404]['path'].tolist()
         added = add_to_framework_paths(framework, found_paths)
         if added:
@@ -468,11 +482,9 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
         
         if sensitive_findings:
             print(f"\n[!] 发现 {len(sensitive_findings)} 条敏感信息泄露:")
-            for f in sensitive_findings:
+            for f in sensitive_findings[:10]:
                 print(f"    [{f['severity']}] {f['desc']}: {f['value']} ({f['url']})")
             
-            # 保存到JSON
-            import json
             os.makedirs('data', exist_ok=True)
             with open('data/sensitive_findings.json', 'w') as f:
                 json.dump(sensitive_findings, f, indent=2)
@@ -480,7 +492,7 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
         else:
             print(f"\n[+] 未发现敏感信息泄露 (已检查 {checked} 个文件)")
 
-     # ===== JS路径提取 =====
+    # ===== JS路径提取 =====
     if results:
         found_paths = [r['path'] for r in results if r.get('status_code') == 200]
         try:
@@ -488,8 +500,6 @@ def scan_targets(base_url, path_list, output_file='data/scan_results.csv',
             js_paths, checked_js = scan_js_for_paths(base_url, found_paths, timeout=timeout)
             if js_paths:
                 print(f"\n[+] 从JS文件中提取到 {len(js_paths)} 个新路径")
-                # 可以继续扫描这些新路径，或者保存到文件供后续使用
-                # 这里只保存，不自动扫描（避免扫描爆炸）
         except Exception as e:
             print(f"\n[!] JS路径提取失败: {e}")
     

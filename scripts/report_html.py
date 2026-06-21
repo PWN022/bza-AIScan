@@ -40,7 +40,7 @@ def generate_html_report(csv_file='data/scan_results.csv', output_file='data/rep
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>PathFinder 扫描报告</title>
+    <title>DirAI 扫描报告</title>
     <style>
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0d1117; padding: 30px; color: #e6edf3; }}
@@ -99,7 +99,7 @@ def generate_html_report(csv_file='data/scan_results.csv', output_file='data/rep
 <body>
 <div class="container">
     <div class="header">
-        <h1>PathFinder 扫描报告</h1>
+        <h1>DirAI 扫描报告</h1>
         <div class="sub">生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | 共扫描 {total} 条路径</div>
     </div>
     
@@ -263,7 +263,7 @@ def generate_html_report(csv_file='data/scan_results.csv', output_file='data/rep
     </div>
     
     <div class="footer">
-        PathFinder v1.0 | 扫描结果由 AI 辅助生成，请人工验证
+        DirAI v1.0 | 扫描结果由 AI 辅助生成，请人工验证
     </div>
 </div>
 </body>

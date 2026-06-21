@@ -2,7 +2,7 @@ import pandas as pd
 import joblib
 import sys
 
-def analyze_with_model(data_file, model_file='output/pathfinder_model.pkl'):
+def analyze_with_model(data_file, model_file='output/dirai_model.pkl'):
     try:
         model = joblib.load(model_file)
     except:

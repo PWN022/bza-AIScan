@@ -9,25 +9,34 @@ from js_parser import scan_js_for_paths
 from playwright_scan import capture_requests
 from framework_detector import detect_framework
 from scan import FRAMEWORK_PATHS, save_framework_paths
+from ai_analyzer import AIAnalyzer
 import pandas as pd
 import json
+
+__version__ = "1.0.0"
 
 def do_scan(target_url, dict_file='data/framework_paths.json', output_html='data/report.html',
             output_csv='data/scan_results.csv', workers=10, timeout=3,
             max_paths=0, ai_limit=20, depth_limit=3, cache_404=True,
-            enable_ai=True, resume_file=None):
+            enable_ai=False, resume_file=None):
     if dict_file and not os.path.exists(dict_file):
         print(f"Warning: Dictionary file not found: {dict_file}")
         dict_file = None
 
     print(f"Target: {target_url}")
     print(f"Dictionary: {dict_file if dict_file else '框架内置'}")
-    print(f"AI generation: {'ON' if enable_ai else 'OFF'}")
+    print(f"AI辅助: {'ON' if enable_ai else 'OFF'}")
     print(f"Concurrent workers: {workers}")
     print(f"Timeout: {timeout}s")
     print(f"Output CSV: {output_csv}")
     print(f"Output HTML: {output_html}")
     print("")
+
+    if enable_ai:
+        ai = AIAnalyzer()
+        if not ai.enabled:
+            print("[!] AI 未启用，请检查 API Key 配置")
+            enable_ai = False
 
     result = scan_targets(
         target_url, dict_file,
@@ -49,37 +58,21 @@ def do_scan(target_url, dict_file='data/framework_paths.json', output_html='data
         found_sensitive = len(df[df['label'] == 1])
         print(f"\n扫描统计: 共 {len(df)} 条, 200: {found_200}, 403: {found_403}, 敏感: {found_sensitive}")
 
-        # JS提取
-        print("\n[+] 从JS中提取路径...")
-        try:
-            found_paths = df[df['status_code'] == 200]['path'].tolist()
-            print(f"    找到 {len(found_paths)} 个可访问路径用于JS提取")
-            js_paths, checked_js = scan_js_for_paths(target_url, found_paths, timeout=timeout)
-            if js_paths:
-                print(f"    提取到 {len(js_paths)} 个新路径")
-                # 保存JS提取结果
-                with open('data/js_extracted_paths.json', 'w') as f:
-                    json.dump(js_paths, f, indent=2)
-            else:
-                print(f"    未提取到新路径 (已检查 {checked_js} 个JS文件)")
-        except Exception as e:
-            print(f"    JS提取失败: {e}")
+        if enable_ai and ai and ai.enabled:
+            print("\n[+] AI 生成报告摘要...")
+            try:
+                results_list = df.to_dict('records')
+                summary = ai.generate_report_summary(results_list)
+                if summary:
+                    print("\n" + "=" * 50)
+                    print("AI 报告摘要:")
+                    print(summary)
+                    print("=" * 50)
+                    with open('data/ai_summary.txt', 'w') as f:
+                        f.write(summary)
+            except Exception as e:
+                print(f"    AI 摘要生成失败: {e}")
 
-        # 敏感信息扫描
-        print("\n[+] 扫描敏感信息...")
-        try:
-            found_paths = df[df['status_code'] == 200]['path'].tolist()
-            findings, checked = scan_sensitive_files(target_url, found_paths, timeout=timeout)
-            if findings:
-                print(f"    发现 {len(findings)} 条敏感信息")
-                for f in findings[:5]:
-                    print(f"      [{f['severity']}] {f['desc']}: {f['value'][:30]}...")
-            else:
-                print(f"    未发现敏感信息 (已检查 {checked} 个文件)")
-        except Exception as e:
-            print(f"    敏感信息扫描失败: {e}")
-
-        # 生成HTML报告
         print("\n[+] 生成HTML报告...")
         generate_html_report(output_csv, output_html)
         print(f"    报告已生成: {output_html}")
@@ -97,11 +90,9 @@ def do_analyze(input_csv, output_html='data/report.html', workers=10, timeout=3)
     print(f"分析文件: {input_csv}")
     df = pd.read_csv(input_csv)
 
-    # JS提取
     print("\n[+] 从JS中提取路径...")
     try:
         found_paths = df[df['status_code'] == 200]['path'].tolist()
-        print(f"    找到 {len(found_paths)} 个可访问路径用于JS提取")
         js_paths, checked_js = scan_js_for_paths('', found_paths, timeout=timeout)
         if js_paths:
             print(f"    提取到 {len(js_paths)} 个新路径")
@@ -110,7 +101,6 @@ def do_analyze(input_csv, output_html='data/report.html', workers=10, timeout=3)
     except Exception as e:
         print(f"    JS提取失败: {e}")
 
-    # 敏感信息扫描
     print("\n[+] 扫描敏感信息...")
     try:
         found_paths = df[df['status_code'] == 200]['path'].tolist()
@@ -122,7 +112,6 @@ def do_analyze(input_csv, output_html='data/report.html', workers=10, timeout=3)
     except Exception as e:
         print(f"    敏感信息扫描失败: {e}")
 
-    # 生成HTML报告
     print("\n[+] 生成HTML报告...")
     generate_html_report(input_csv, output_html)
     print(f"    报告已生成: {output_html}")
@@ -154,17 +143,18 @@ def do_dict(args):
         return
 
     print("请指定 --show 或 --add")
-    print("  pathfinder dict --show")
-    print("  pathfinder dict --add /admin")
+    print("  dirai dict --show")
+    print("  dirai dict --add /admin")
 
 def do_capture(args):
     capture_requests(args.url, args.output, args.wait)
 
 def main():
-    parser = argparse.ArgumentParser(description='PathFinder - AI-powered path scanner')
+    parser = argparse.ArgumentParser(description='DirAI-BZA - AI辅助路径扫描器')
+    parser.add_argument('--version', action='version', version=f'DirAI-BZA {__version__}')
     subparsers = parser.add_subparsers(dest='command', help='子命令')
 
-    # ===== scan 子命令 =====
+    # scan
     sp = subparsers.add_parser('scan', help='完整扫描（框架识别 + 目录扫描 + JS提取 + 敏感信息 + HTML报告）')
     sp.add_argument('-u', '--url', required=True, help='目标URL')
     sp.add_argument('-d', '--dict', default='data/framework_paths.json', help='字典文件路径')
@@ -176,28 +166,29 @@ def main():
     sp.add_argument('--ai-limit', type=int, default=20, help='AI生成路径上限 (默认: 20)')
     sp.add_argument('--depth', type=int, default=3, help='最大路径深度 (默认: 3)')
     sp.add_argument('--no-cache', action='store_true', help='禁用404缓存')
-    sp.add_argument('--no-ai', action='store_true', help='禁用AI路径生成')
+    sp.add_argument('--no-ai', action='store_true', help='禁用规则AI路径生成')
+    sp.add_argument('--ai', action='store_true', help='启用大模型AI辅助（需配置API Key）')
     sp.add_argument('--resume', help='从之前的扫描结果继续')
 
-    # ===== analyze 子命令 =====
+    # analyze
     sp = subparsers.add_parser('analyze', help='分析已有CSV（JS提取 + 敏感信息 + HTML报告）')
     sp.add_argument('-i', '--input', required=True, help='CSV文件路径')
     sp.add_argument('-o', '--output', default='data/report.html', help='HTML报告输出路径')
     sp.add_argument('--workers', type=int, default=10, help='并发线程数 (默认: 10)')
     sp.add_argument('--timeout', type=int, default=3, help='请求超时秒数 (默认: 3)')
 
-    # ===== report 子命令 =====
+    # report
     sp = subparsers.add_parser('report', help='只生成HTML报告')
     sp.add_argument('-i', '--input', required=True, help='CSV文件路径')
     sp.add_argument('-o', '--output', default='data/report.html', help='HTML报告输出路径')
 
-    # ===== dict 子命令 =====
+    # dict
     sp = subparsers.add_parser('dict', help='字典管理')
     sp.add_argument('--show', action='store_true', help='显示当前字典')
     sp.add_argument('--add', help='添加路径到字典')
     sp.add_argument('--fw', '--framework', help='指定框架名称 (默认: java_spring)')
 
-    # ===== capture 子命令 =====
+    # capture
     sp = subparsers.add_parser('capture', help='Playwright抓包')
     sp.add_argument('-u', '--url', required=True, help='目标URL')
     sp.add_argument('-o', '--output', default='data/playwright_requests.json', help='JSON输出路径')
@@ -216,7 +207,7 @@ def main():
             ai_limit=args.ai_limit,
             depth_limit=args.depth,
             cache_404=not args.no_cache,
-            enable_ai=not args.no_ai,
+            enable_ai=args.ai,
             resume_file=args.resume
         )
     elif args.command == 'analyze':

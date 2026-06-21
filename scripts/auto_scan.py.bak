@@ -67,7 +67,7 @@ def cmd_report(args):
     
     if not os.path.exists(csv_file):
         print(f"错误: 数据文件不存在: {csv_file}")
-        print("请先运行扫描: pathfinder scan -u <url>")
+        print("请先运行扫描: dirai scan -u <url>")
         return
     
     generate_html_report(csv_file, output_file)
@@ -91,7 +91,7 @@ def cmd_scan(args):
     )
 
 def main():
-    parser = argparse.ArgumentParser(description='PathFinder - AI-powered path scanner')
+    parser = argparse.ArgumentParser(description='dirai - AI-powered path scanner')
     subparsers = parser.add_subparsers(dest='command', help='子命令')
     
     # ===== scan 子命令 =====
@@ -199,7 +199,7 @@ def cmd_dict(args):
         print(f"已添加: {fw} → {args.add}")
 
 def auto_scan_cli():
-    """pathfinder 命令入口"""
+    """dirai 命令入口"""
     main()
 
 if __name__ == '__main__':

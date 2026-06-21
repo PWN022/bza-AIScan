@@ -1,3 +1,10 @@
 *.egg-info/
 __pycache__/
 *.pyc
+.env
+*.egg-info/
+__pycache__/
+*.pyc
+data/*.csv
+data/*.html
+data/*.json

@@ -6,7 +6,7 @@ import joblib
 import warnings
 warnings.filterwarnings('ignore')
 
-def train_model(data_file='data/scan_results.csv', model_file='output/pathfinder_model.pkl'):
+def train_model(data_file='data/scan_results.csv', model_file='output/dirai_model.pkl'):
     df = pd.read_csv(data_file)
     
     df = df[df['label'] != -1]

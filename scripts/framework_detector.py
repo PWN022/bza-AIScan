@@ -1,157 +1,180 @@
 import requests
 import json
 from urllib.parse import urljoin
+from ai_analyzer import AIAnalyzer
 
 class FrameworkDetector:
     def __init__(self, target_url):
         self.target_url = target_url.rstrip('/')
+        self.ai = AIAnalyzer()
         
-        # 框架探测路径配置
-        self.probe_configs = {
+        # 框架配置
+        self.framework_configs = {
             'java_spring': {
                 'name': 'Java Spring Boot',
-                'probes': [
-                    {'path': '/actuator/health', 'expect': ['status', 'UP', '200']},
-                    {'path': '/actuator', 'expect': ['_links', 'spring']},
-                    {'path': '/swagger-ui.html', 'expect': ['swagger', 'Swagger UI']},
-                    {'path': '/v3/api-docs', 'expect': ['openapi', 'swagger']},
-                ],
-                'headers': ['X-Application-Context', 'X-Content-Type-Options'],
-                'server_headers': ['tomcat', 'spring'],
-                'extensions': ['.jsp', '.jspx', '.do', '.action'],
-                'common_paths': ['actuator/health', 'swagger-ui.html', 'v3/api-docs', 'admin', 'api']
+                'extensions': ['.jsp', '.jspx', '.do', '.action', '.jspf']
             },
             'php': {
                 'name': 'PHP',
-                'probes': [
-                    {'path': '/index.php', 'expect': ['php', '<?php']},
-                    {'path': '/phpinfo.php', 'expect': ['PHP', 'phpinfo']},
-                    {'path': '/wp-admin', 'expect': ['WordPress', 'wp-admin']},
-                ],
-                'headers': [],
-                'server_headers': ['php'],
-                'extensions': ['.php', '.phtml', '.php5', '.php7'],
-                'common_paths': ['index.php', 'admin.php', 'wp-admin', 'phpinfo.php']
-            },
-            'python': {
-                'name': 'Python',
-                'probes': [
-                    {'path': '/admin/login/?next=/admin/', 'expect': ['django', 'csrftoken']},
-                    {'path': '/admin', 'expect': ['django', 'csrftoken', 'sessionid']},
-                ],
-                'headers': [],
-                'server_headers': ['python', 'gunicorn', 'uwsgi'],
-                'extensions': ['.py', '.wsgi'],
-                'common_paths': ['admin/', 'login/', 'api/']
+                'extensions': ['.php', '.phtml', '.php5', '.php7', '.inc']
             },
             'nodejs': {
                 'name': 'Node.js',
-                'probes': [
-                    {'path': '/api', 'expect': ['express', 'json']},
-                ],
-                'headers': [],
-                'server_headers': ['express', 'node', 'nginx'],
-                'extensions': ['.js', '.ts'],
-                'common_paths': ['api/', 'admin/', 'static/']
+                'extensions': ['.js', '.ts', '.jsx', '.tsx']
+            },
+            'python': {
+                'name': 'Python',
+                'extensions': ['.py', '.wsgi', '.j2']
             },
             'dotnet': {
                 'name': '.NET',
-                'probes': [
-                    {'path': '/Default.aspx', 'expect': ['ASP.NET', '__VIEWSTATE']},
-                    {'path': '/Login.aspx', 'expect': ['ASP.NET', 'login']},
-                ],
-                'headers': [],
-                'server_headers': ['asp.net', 'microsoft-iis'],
-                'extensions': ['.aspx', '.ashx', '.asmx'],
-                'common_paths': ['Default.aspx', 'Login.aspx', 'Admin.aspx']
+                'extensions': ['.aspx', '.ashx', '.asmx', '.axd']
             },
             'static': {
                 'name': 'Static',
-                'probes': [],
-                'headers': [],
-                'server_headers': [],
-                'extensions': ['.html', '.htm', '.css', '.js', '.json'],
-                'common_paths': ['index.html', 'about.html', 'contact.html']
+                'extensions': ['.html', '.htm', '.css', '.js', '.json', '.xml']
             }
         }
 
     def detect(self):
         print("正在识别目标框架...")
-        scores = {fw: 0 for fw in self.probe_configs.keys()}
         
-        # 1. 探测框架特征路径
-        print("  正在探测框架特征路径...")
-        for fw_name, config in self.probe_configs.items():
-            for probe in config.get('probes', []):
-                try:
-                    full_url = urljoin(self.target_url, probe['path'])
-                    resp = requests.get(full_url, timeout=5, allow_redirects=True,
-                                       headers={'User-Agent': 'Mozilla/5.0'})
-                    
-                    # 200 或 403/401 说明路径存在（有权限控制）
-                    if resp.status_code in [200, 201, 403, 401]:
-                        scores[fw_name] += 3
-                        content = resp.text.lower()
-                        for expect in probe.get('expect', []):
-                            if expect.lower() in content:
-                                scores[fw_name] += 2
-                except:
-                    pass
+        features = self._collect_features()
         
-        # 2. 探测响应头
-        print("  正在探测响应头特征...")
+        # 1. 尝试 AI 识别
+        if self.ai and self.ai.enabled:
+            result = self._ai_detect(features)
+            if result and 'key' in result:
+                key = result['key']
+                if key in self.framework_configs:
+                    print(f"  [AI] 识别到: {self.framework_configs[key]['name']}")
+                    return key, self.get_scan_config(key)
+        
+        # 2. 规则识别
+        key = self._rule_detect(features)
+        print(f"  [规则] 识别到: {self.framework_configs[key]['name']}")
+        return key, self.get_scan_config(key)
+
+    def _collect_features(self):
+        features = {
+            'headers': {},
+            'html': '',
+            'status_codes': {},
+            'common_paths': {}
+        }
+        
         try:
             resp = requests.get(self.target_url, timeout=5, allow_redirects=True,
                                headers={'User-Agent': 'Mozilla/5.0'})
-            server = resp.headers.get('Server', '').lower()
-            x_powered = resp.headers.get('X-Powered-By', '').lower()
-            combined_headers = server + x_powered
-            
-            for fw_name, config in self.probe_configs.items():
-                for header in config.get('server_headers', []):
-                    if header in combined_headers:
-                        scores[fw_name] += 5
+            features['headers'] = dict(resp.headers)
+            features['html'] = resp.text[:5000]
+            features['status_codes']['/'] = resp.status_code
         except:
             pass
         
-        # 3. 排序并输出
-        sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+        probe_paths = ['/admin', '/login', '/api', '/actuator/health', '/index.php']
+        for path in probe_paths:
+            try:
+                url = urljoin(self.target_url, path)
+                resp = requests.get(url, timeout=3, allow_redirects=True,
+                                   headers={'User-Agent': 'Mozilla/5.0'})
+                features['status_codes'][path] = resp.status_code
+                if resp.status_code == 200:
+                    features['common_paths'][path] = resp.text[:500]
+            except:
+                pass
         
-        print("\n框架识别结果:")
-        for fw, score in sorted_scores:
-            if score > 0:
-                name = self.probe_configs[fw]['name']
-                print(f"  {name}: {score} 分")
-        
-        # 4. 决策
-        if sorted_scores[0][1] < 3:
-            print("\n未识别出明确的框架，使用静态扫描策略")
-            return 'static', self.get_scan_config('static')
-        
-        detected = sorted_scores[0][0]
-        print(f"\n识别到主框架: {self.probe_configs[detected]['name']}")
-        return detected, self.get_scan_config(detected)
+        return features
 
-    def get_scan_config(self, framework):
-        config = self.probe_configs.get(framework, self.probe_configs['static'])
+    def _ai_detect(self, features):
+        prompt = f"""
+分析以下网站的技术栈:
+
+网站URL: {self.target_url}
+
+响应头:
+{json.dumps(features.get('headers', {}), indent=2)}
+
+首页HTML片段:
+{features.get('html', '')[:1000]}
+
+路径状态码:
+{json.dumps(features.get('status_codes', {}), indent=2)}
+
+请选择最匹配的框架（只输出框架名称，不要输出其他内容）:
+可选: java_spring, php, nodejs, python, dotnet, static
+
+输出格式（只输出key）:
+php
+"""
+        
+        try:
+            response = self.ai.client.chat.completions.create(
+                model=self.ai.model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.1,
+                max_tokens=50
+            )
+            content = response.choices[0].message.content.strip().lower()
+            # 提取框架key
+            valid_keys = ['java_spring', 'php', 'nodejs', 'python', 'dotnet', 'static']
+            for key in valid_keys:
+                if key in content:
+                    return {'key': key}
+            return None
+        except:
+            return None
+
+    def _rule_detect(self, features):
+        content = str(features.get('headers', {})) + features.get('html', '')
+        scores = {key: 0 for key in self.framework_configs.keys()}
+        
+        # Java
+        if any(k in content for k in ['spring', 'Spring', 'X-Application-Context', 'actuator']):
+            scores['java_spring'] += 3
+        if 'JSESSIONID' in content:
+            scores['java_spring'] += 2
+        if '.jsp' in content or '.do' in content:
+            scores['java_spring'] += 1
+        
+        # PHP
+        if 'PHPSESSID' in content or 'X-Powered-By: PHP' in content:
+            scores['php'] += 3
+        if '.php' in content or '<?php' in content:
+            scores['php'] += 2
+        if 'wp-content' in content or 'wp-admin' in content:
+            scores['php'] += 1
+        
+        # Node.js
+        if 'X-Powered-By: Express' in content or 'connect.sid' in content:
+            scores['nodejs'] += 3
+        
+        # Python
+        if 'csrftoken' in content or 'sessionid' in content:
+            scores['python'] += 2
+        if 'django' in content.lower() or 'flask' in content.lower():
+            scores['python'] += 3
+        
+        # .NET
+        if 'ASP.NET_SessionId' in content or '__VIEWSTATE' in content:
+            scores['dotnet'] += 3
+        if '.aspx' in content or '.ashx' in content:
+            scores['dotnet'] += 1
+        
+        best = max(scores, key=scores.get)
+        if scores[best] <= 1:
+            best = 'static'
+        
+        return best
+
+    def get_scan_config(self, framework_key):
+        config = self.framework_configs.get(framework_key, self.framework_configs['static'])
         return {
             'framework_name': config['name'],
-            'extensions': config.get('extensions', ['.html', '.htm']),
-            'common_paths': config.get('common_paths', []),
+            'extensions': config['extensions']
         }
 
 def detect_framework(target_url):
     detector = FrameworkDetector(target_url)
-    framework, config = detector.detect()
-    return framework, config
-
-if __name__ == '__main__':
-    import sys
-    if len(sys.argv) > 1:
-        url = sys.argv[1]
-        if not url.startswith('http'):
-            url = 'http://' + url
-        framework, config = detect_framework(url)
-        print(f"\n扫描配置: 框架={config['framework_name']}, 后缀={config['extensions']}")
-    else:
-        print("用法: python framework_detector.py <目标URL>")
+    framework_key, config = detector.detect()
+    return framework_key, config
