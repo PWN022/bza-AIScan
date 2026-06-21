@@ -1,0 +1,11 @@
+requests
+beautifulsoup4
+pandas
+scikit-learn
+xgboost
+joblib
+urllib3
+lxml
+flask
+openai>=1.0.0
+python-dotenv>=1.0.0

@@ -1,0 +1,35 @@
+# 在 scan.py 顶部添加导入
+from ai_analyzer import AIAnalyzer
+
+# 在 scan_targets 函数中，找到现有的 generate_path_variants 调用
+# 替换为增强版：
+
+# 找到这段代码:
+# if enable_ai_generation and features['status_code'] in [200, 301, 302, 403]:
+#     variants = generate_path_variants(path)
+
+# 替换为:
+if enable_ai_generation and features['status_code'] in [200, 301, 302, 403]:
+    # 先用规则生成
+    variants = generate_path_variants(path)
+    new_count = 0
+    for v in variants:
+        if v not in scanned_set and v not in pending:
+            pending.append(v)
+            new_count += 1
+    if new_count > 0:
+        print(f"  + 规则生成 {new_count} 个新路径")
+    
+    # 再调用 AI 推理（每 10 条可达路径触发一次，减少 token 消耗）
+    if len(results) % 10 == 0 and len(results) > 0:
+        try:
+            ai = AIAnalyzer()
+            if ai.enabled:
+                found_paths = [r['path'] for r in results if r.get('status_code') not in [404, -1]]
+                ai_paths = ai.generate_paths(found_paths, base_url, max_new=5)
+                for p in ai_paths:
+                    if p not in scanned_set and p not in pending:
+                        pending.append(p)
+                        print(f"  + AI 推理新路径: {p}")
+        except Exception as e:
+            pass
